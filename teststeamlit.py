@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,8 +8,8 @@ import geopandas as gp
 import altair as alt
 import pydeck as pdk
 #define name
-st.title('Uber by streamlit')
-date_selected = st.sidebar.selectbox('2019/01/',['01','02','03','04','05'])
+st.title('Uber pick up by streamlit')
+date_selected = st.sidebar.selectbox('Choose date 2019/01/',['01','02','03','04','05'])
 
 #import data
 DATE_TIME = 'timestart'
@@ -23,13 +24,12 @@ elif date_selected =='04':
 elif date_selected =='05':
     DATA_URL = ("https://raw.githubusercontent.com/6030810621/streamlit/master/20190105.csv")
 def load_data(nrows):
-def load_data(nrows):
     data = pd.read_csv(DATA_URL, nrows=nrows, error_bad_lines=False)
     lowercase = lambda x: str(x).lower()
     data.rename(lowercase, axis="columns", inplace=True)
     data[DATE_TIME] = pd.to_datetime(data[DATE_TIME])
     return data
-data = load_data(100000)
+data = load_data(60000)
 
 #slidebar and data
 hour = st.slider("Hour to look at", 0, 23)
@@ -44,7 +44,7 @@ lon = 100.523186
 lat = 13.736717
 station_map = fo.Map(
 	location = [lat, lon], 
-	zoom_start = 10)
+	zoom_start = 12)
 
 latitudes = list(data.latstartl)
 longitudes = list(data.lonstartl)
@@ -86,7 +86,7 @@ st.write(pdk.Deck(
     ],
 ))
 
-#
+#graph
 st.subheader("Breakdown by minute between %i:00 and %i:00" % (hour, (hour + 1) % 24))
 filtered = data[
     (data[DATE_TIME].dt.hour >= hour) & (data[DATE_TIME].dt.hour < (hour + 1))
